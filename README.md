@@ -4,15 +4,11 @@ Prizecaster is a presenter-friendly raffle drawing app for hackathons, meetups, 
 
 It gives organizers a clean setup screen for configuring prizes and participant counts, then switches into a live drawing view designed for a big screen. The current prize is front and center, the drawing animation builds a little suspense, and the winner board keeps the room oriented as prizes are assigned.
 
-## Live Preview
+## Launch The App
 
-This repo is ready for GitHub Pages.
+[Open Prizecaster](https://disbitski.github.io/Prizecaster/)
 
-The website is a static app, so GitHub Pages can publish it directly from the `main` branch root. After Pages is enabled, the live preview is available at:
-
-```text
-https://disbitski.github.io/Prizecaster/
-```
+Prizecaster is live on GitHub Pages as a static website, so you can run a raffle directly in the browser with no install step.
 
 For local preview:
 
@@ -20,11 +16,7 @@ For local preview:
 python3 -m http.server 4173
 ```
 
-Then open:
-
-```text
-http://127.0.0.1:4173/
-```
+Then open [http://127.0.0.1:4173/](http://127.0.0.1:4173/).
 
 ## What Prizecaster Does
 
@@ -73,11 +65,7 @@ That matters for raffles because random drawings should be more than "trust me, 
 
 VRF is optional because it has operational requirements and a small cost. To use it, you need a funded Chainlink VRF subscription on a supported network, and each randomness request consumes subscription funds for the VRF service and transaction gas. For casual or rehearsal usage, demo mode is enough. For public, sponsored, or higher-trust drawings, verified mode is the more rigorous path.
 
-Official Chainlink VRF v2.5 documentation:
-
-```text
-https://docs.chain.link/vrf/v2-5/subscription/get-a-random-number
-```
+Official Chainlink VRF v2.5 documentation: [Get a random number](https://docs.chain.link/vrf/v2-5/subscription/get-a-random-number).
 
 ## Optional Chainlink VRF Setup
 
@@ -89,7 +77,7 @@ contracts/PrizecasterVRF.sol
 
 Basic setup flow:
 
-1. Create and fund a VRF v2.5 subscription at `https://vrf.chain.link`.
+1. Create and fund a VRF v2.5 subscription at [vrf.chain.link](https://vrf.chain.link).
 2. Deploy `PrizecasterVRF` with:
    - `coordinatorAddress` for your target network
    - your `subscriptionId`
@@ -116,7 +104,7 @@ The included Solidity contract is example code and has not been audited. Review,
 
 Prizecaster is intentionally static. There is no build step, framework, or server dependency for the website itself.
 
-GitHub Pages serves these files directly from the `main` branch root:
+The live app is published at [https://disbitski.github.io/Prizecaster/](https://disbitski.github.io/Prizecaster/). GitHub Pages serves these files directly from the `main` branch root:
 
 - `index.html`
 - `styles.css`
