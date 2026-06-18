@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prizecaster</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Event raffle drawing</p>
+          <h1>Prizecaster</h1>
+        </div>
+        <div class="status-strip" aria-live="polite">
+          <button id="themeToggle" class="theme-button" type="button">Light theme</button>
+          <span id="modeBadge" class="badge badge-demo">Demo mode</span>
+          <span id="walletBadge" class="badge">Wallet not connected</span>
+        </div>
+      </header>
+
+      <nav class="tabs" aria-label="Prizecaster views">
+        <button class="tab active" data-tab="setup" type="button">Setup</button>
+        <button class="tab" data-tab="draw" type="button">Live drawing</button>
+        <button class="tab" data-tab="winners" type="button">Winners</button>
+      </nav>
+
+      <main>
+        <section id="setup" class="view active" aria-labelledby="setupTitle">
+          <div class="setup-grid">
+            <section class="panel setup-panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Event settings</p>
+                  <h2 id="setupTitle">Build the drawing board</h2>
+                </div>
+                <button id="loadSample" class="ghost-button" type="button">Sample event</button>
+              </div>
+
+              <label class="field">
+                <span>Event name</span>
+                <input id="eventName" type="text" value="Hack Night Prize Draw" autocomplete="off" />
+              </label>
+
+              <div class="two-column">
+                <label class="field">
+                  <span>Participants</span>
+                  <input id="participantCount" type="number" min="1" max="1000000" value="120" />
+                </label>
+                <label class="field">
+                  <span>Prize count</span>
+                  <input id="prizeCount" type="number" min="1" max="50" value="4" />
+                </label>
+              </div>
+
+              <label class="toggle-row">
+                <input id="uniqueWinners" type="checkbox" checked />
+                <span>
+                  <strong>Prevent duplicate winning numbers</strong>
+                  <small>Useful when each participant has one ticket number.</small>
+                </span>
+              </label>
+
+              <div class="prize-heading">
+                <h3>Prize names</h3>
+                <button id="addPrize" class="icon-button" type="button" aria-label="Add prize" title="Add prize">+</button>
+              </div>
+              <div id="prizeFields" class="prize-fields"></div>
+            </section>
+
+            <section class="panel vrf-panel">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Randomness source</p>
+                  <h2>Randomness engine</h2>
+                </div>
+              </div>
+
+              <div class="segmented" role="group" aria-label="Randomness mode">
+                <button id="demoModeButton" class="segment active" type="button">Demo</button>
+                <button id="vrfModeButton" class="segment" type="button">Verified draw</button>
+              </div>
+
+              <div class="mode-note" id="modeNote">
+                Demo mode uses browser crypto for rehearsal. Verified draw mode can be powered by Chainlink VRF through your deployed consumer contract.
+              </div>
+
+              <label class="field">
+                <span>Consumer contract address</span>
+                <input id="contractAddress" type="text" placeholder="0x..." autocomplete="off" />
+              </label>
+
+              <label class="toggle-row compact">
+                <input id="nativePayment" type="checkbox" />
+                <span>
+                  <strong>Pay in native token</strong>
+                  <small>Leave off for LINK-funded subscriptions.</small>
+                </span>
+              </label>
+
+              <div class="button-row">
+                <button id="connectWallet" class="secondary-button" type="button">Connect wallet</button>
+                <button id="saveSetup" class="primary-button" type="button">Save setup</button>
+              </div>
+
+              <div class="contract-callout">
+                <strong>Contract flow</strong>
+                <span>Optional: deploy <code>contracts/PrizecasterVRF.sol</code>, fund a Chainlink VRF v2.5 subscription, add the contract as a consumer, then paste the contract address here.</span>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="draw" class="view drawing-stage" aria-labelledby="drawTitle">
+          <div class="stage-header">
+            <div>
+              <p id="drawEventName" class="eyebrow">Hack Night Prize Draw</p>
+              <h2 id="drawTitle">Live drawing</h2>
+            </div>
+            <button id="fullscreenButton" class="secondary-button" type="button">Fullscreen</button>
+          </div>
+
+          <div class="drawing-grid">
+            <section class="draw-focus">
+              <p class="eyebrow">Now drawing</p>
+              <h3 id="currentPrize">Grand Prize</h3>
+              <div id="numberDisplay" class="number-display" aria-live="polite">Ready</div>
+              <p id="drawStatus" class="draw-status">Set up your prizes, then draw a winner.</p>
+              <div class="draw-actions">
+                <button id="drawWinner" class="draw-button" type="button">Draw winner</button>
+                <button id="skipPrize" class="secondary-button" type="button">Skip prize</button>
+              </div>
+
+              <div class="winner-entry">
+                <label class="field">
+                  <span>Winner info</span>
+                  <input id="winnerInfo" type="text" placeholder="Name, team, seat, or note" autocomplete="off" disabled />
+                </label>
+                <button id="assignWinner" class="primary-button" type="button" disabled>Assign winner</button>
+              </div>
+            </section>
+
+            <aside class="queue-panel">
+              <section>
+                <h3>Prize queue</h3>
+                <div id="prizeQueue" class="queue-list"></div>
+              </section>
+              <section>
+                <h3>Final winners</h3>
+                <div id="winnerListCompact" class="winner-list compact-list"></div>
+              </section>
+            </aside>
+          </div>
+        </section>
+
+        <section id="winners" class="view" aria-labelledby="winnersTitle">
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Results</p>
+                <h2 id="winnersTitle">Winner board</h2>
+              </div>
+              <div class="button-row">
+                <button id="exportResults" class="secondary-button" type="button">Export JSON</button>
+                <button id="resetEvent" class="danger-button" type="button">Reset event</button>
+              </div>
+            </div>
+            <div id="winnerListFull" class="winner-list full-list"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
